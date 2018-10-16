@@ -185,7 +185,7 @@ namespace MultiThreadedFileSearcher
         }
         private static void Searcher_FoundInfo(FileFoundInfoEventArgs e)
         {
-            throw new NotImplementedException();
+            stop = true;
         }
     }
 }
