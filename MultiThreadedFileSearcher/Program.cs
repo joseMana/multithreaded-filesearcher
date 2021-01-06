@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace MultiThreadedFileSearcher
 {
@@ -53,7 +50,6 @@ namespace MultiThreadedFileSearcher
 
             Console.ReadLine();
         }
-
         private static void SearchDirectory(DirectoryInfo dirInfo)
         {
             if (!m_stop)
@@ -108,7 +104,6 @@ namespace MultiThreadedFileSearcher
 
             return matches;
         }
-
         private static Boolean FileContainsBytes(String path, Byte[] compare)
         {
             Boolean contains = false;
@@ -177,28 +172,6 @@ namespace MultiThreadedFileSearcher
             }
 
             return contains;
-        }
-    }
-    public class FoundInfoEventArgs
-    {
-        // ----- Variables -----
-
-        private FileSystemInfo m_info;
-
-
-        // ----- Constructor -----
-
-        public FoundInfoEventArgs(FileSystemInfo info)
-        {
-            m_info = info;
-        }
-
-
-        // ----- Public Properties -----
-
-        public FileSystemInfo Info
-        {
-            get { return m_info; }
         }
     }
 }
