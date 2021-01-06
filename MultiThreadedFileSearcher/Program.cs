@@ -72,10 +72,7 @@ namespace MultiThreadedFileSearcher
                         if (MatchesRestrictions(info))
                         {
                             // We have found a matching FileSystemInfo, so let's raise an event:
-                            if (FoundInfo != null)
-                            {
-                                FoundInfo(new FoundInfoEventArgs(info));
-                            }
+                            FoundInfo?.Invoke(new FoundInfoEventArgs(info));
                         }
                     }
 
