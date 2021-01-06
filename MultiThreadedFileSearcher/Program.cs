@@ -7,8 +7,8 @@ namespace MultiThreadedFileSearcher
 {
     class Program
     {
-        public delegate void FoundInfoEventHandler(FoundInfoEventArgs e);
-        public static event FoundInfoEventHandler FoundInfo;
+        public delegate void FileFoundInfoEventHandler(FileFoundInfoEventArgs e);
+        public static event FileFoundInfoEventHandler FoundInfo;
 
         private static string directoryToSearch = @"C:\Users\JosephM\OneDrive - Magenic\Pictures\Notes\08 Code Junks";
         private static List<string> fileName = new List<string> { "canvas*" };
@@ -19,7 +19,7 @@ namespace MultiThreadedFileSearcher
 
         static void Main(string[] args)
         {
-            FoundInfo += new FoundInfoEventHandler(Searcher_FoundInfo);
+            FoundInfo += new FileFoundInfoEventHandler(Searcher_FoundInfo);
 
             Boolean success = true;
 
@@ -75,7 +75,7 @@ namespace MultiThreadedFileSearcher
                             if (MatchesRestrictions(info))
                             {
                                 // We have found a matching FileSystemInfo, so let's raise an event:
-                                FoundInfo?.Invoke(new FoundInfoEventArgs(info));
+                                FoundInfo?.Invoke(new FileFoundInfoEventArgs(info));
                             }
                         }
                     }
@@ -185,7 +185,7 @@ namespace MultiThreadedFileSearcher
             return contains;
         }
 
-        private static void Searcher_FoundInfo(FoundInfoEventArgs e)
+        private static void Searcher_FoundInfo(FileFoundInfoEventArgs e)
         {
             throw new NotImplementedException();
         }
