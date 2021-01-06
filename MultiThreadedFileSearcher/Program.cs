@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
 
 namespace MultiThreadedFileSearcher
 {
@@ -9,9 +10,12 @@ namespace MultiThreadedFileSearcher
         public delegate void FoundInfoEventHandler(FoundInfoEventArgs e);
         public static event FoundInfoEventHandler FoundInfo;
 
-        private static string directoryToSearch = @"C:\Users\JosephM\Downloads";
-        private static string fileToSearch = @"test";
+        private static string directoryToSearch = @"C:\Users\JosephM\OneDrive - Magenic\Pictures\Notes\08 Code Junks";
+        private static List<string> fileName = new List<string> { "canvas*" };
+        private static string fileToSearch = @"";
         private static Byte[] containingBytes = null;
+        private static bool m_stop;
+        private static bool includeSubDirsChecked = true;
 
         static void Main(string[] args)
         {
@@ -49,13 +53,8 @@ namespace MultiThreadedFileSearcher
                 }
             }
 
-
-
-
             Console.ReadLine();
         }
-
-        
 
         private static void SearchDirectory(DirectoryInfo dirInfo)
         {
@@ -63,32 +62,37 @@ namespace MultiThreadedFileSearcher
             {
                 try
                 {
-                    FileSystemInfo[] infos = dirInfo.GetFileSystemInfos(fileToSearch);
-
-                    foreach (FileSystemInfo info in infos)
+                    foreach (String fileName in fileName)
                     {
-                        if (m_stop)
-                        {
-                            break;
-                        }
+                        FileSystemInfo[] infos = dirInfo.GetFileSystemInfos(fileName);
 
-                        if (MatchesRestrictions(info))
+                        foreach (FileSystemInfo info in infos)
                         {
-                            // We have found a matching FileSystemInfo, so let's raise an event:
-                            FoundInfo?.Invoke(new FoundInfoEventArgs(info));
+                            if (m_stop)
+                            {
+                                break;
+                            }
+                            if (MatchesRestrictions(info))
+                            {
+                                // We have found a matching FileSystemInfo, so let's raise an event:
+                                FoundInfo?.Invoke(new FoundInfoEventArgs(info));
+                            }
                         }
                     }
 
-                    DirectoryInfo[] subDirInfos = dirInfo.GetDirectories();
-                    foreach (DirectoryInfo subDirInfo in subDirInfos)
+                    if (includeSubDirsChecked)
                     {
-                        if (m_stop)
+                        DirectoryInfo[] subDirInfos = dirInfo.GetDirectories();
+                        foreach (DirectoryInfo subDirInfo in subDirInfos)
                         {
-                            break;
-                        }
+                            if (m_stop)
+                            {
+                                break;
+                            }
 
-                        // Recursion:
-                        SearchDirectory(subDirInfo);
+                            // Recursion:
+                            SearchDirectory(subDirInfo);
+                        }
                     }
                 }
                 catch (Exception)
@@ -100,7 +104,7 @@ namespace MultiThreadedFileSearcher
         {
             Boolean matches = true;
 
-            if (matches)
+            if (matches && !string.IsNullOrEmpty(fileToSearch))
             {
                 matches = false;
                 if (info is FileInfo)
