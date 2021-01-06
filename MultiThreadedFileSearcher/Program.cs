@@ -9,13 +9,14 @@ namespace MultiThreadedFileSearcher
         public delegate void FoundInfoEventHandler(FoundInfoEventArgs e);
         public static event FoundInfoEventHandler FoundInfo;
 
-        private static bool m_stop;
         private static string directoryToSearch = @"C:\Users\JosephM\Downloads";
         private static string fileToSearch = @"test";
         private static Byte[] containingBytes = null;
 
         static void Main(string[] args)
         {
+            FoundInfo += new FoundInfoEventHandler(Searcher_FoundInfo);
+
             Boolean success = true;
 
             try
@@ -35,7 +36,7 @@ namespace MultiThreadedFileSearcher
                 {
                     dirInfo = new DirectoryInfo(directoryToSearch);
                 }
-                catch (Exception ex)
+                catch
                 {
                     success = false;
                 }
@@ -48,8 +49,14 @@ namespace MultiThreadedFileSearcher
                 }
             }
 
+
+
+
             Console.ReadLine();
         }
+
+        
+
         private static void SearchDirectory(DirectoryInfo dirInfo)
         {
             if (!m_stop)
@@ -172,6 +179,11 @@ namespace MultiThreadedFileSearcher
             }
 
             return contains;
+        }
+
+        private static void Searcher_FoundInfo(FoundInfoEventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }
