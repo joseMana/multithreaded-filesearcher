@@ -14,7 +14,7 @@ namespace MultiThreadedFileSearcher
         private static List<string> fileName = new List<string> { "canvas*" };
         private static string fileToSearch = @"";
         private static Byte[] containingBytes = null;
-        private static bool m_stop;
+        private static bool stop;
         private static bool includeSubDirsChecked = true;
 
         static void Main(string[] args)
@@ -55,10 +55,9 @@ namespace MultiThreadedFileSearcher
 
             Console.ReadLine();
         }
-
         private static void SearchDirectory(DirectoryInfo dirInfo)
         {
-            if (!m_stop)
+            if (!stop)
             {
                 try
                 {
@@ -68,11 +67,11 @@ namespace MultiThreadedFileSearcher
 
                         foreach (FileSystemInfo info in infos)
                         {
-                            if (m_stop)
+                            if (stop)
                             {
                                 break;
                             }
-                            if (MatchesRestrictions(info))
+                            if (IsMatchingRestrictions(info))
                             {
                                 // We have found a matching FileSystemInfo, so let's raise an event:
                                 FoundInfo?.Invoke(new FileFoundInfoEventArgs(info));
@@ -85,7 +84,7 @@ namespace MultiThreadedFileSearcher
                         DirectoryInfo[] subDirInfos = dirInfo.GetDirectories();
                         foreach (DirectoryInfo subDirInfo in subDirInfos)
                         {
-                            if (m_stop)
+                            if (stop)
                             {
                                 break;
                             }
@@ -100,7 +99,7 @@ namespace MultiThreadedFileSearcher
                 }
             }
         }
-        private static Boolean MatchesRestrictions(FileSystemInfo info)
+        private static Boolean IsMatchingRestrictions(FileSystemInfo info)
         {
             Boolean matches = true;
 
@@ -109,13 +108,13 @@ namespace MultiThreadedFileSearcher
                 matches = false;
                 if (info is FileInfo)
                 {
-                    matches = FileContainsBytes(info.FullName, containingBytes);
+                    matches = IsFileContainsBytes(info.FullName, containingBytes);
                 }
             }
 
             return matches;
         }
-        private static Boolean FileContainsBytes(String path, Byte[] compare)
+        private static Boolean IsFileContainsBytes(String path, Byte[] compare)
         {
             Boolean contains = false;
 
@@ -173,7 +172,7 @@ namespace MultiThreadedFileSearcher
                             bytesRead = compare.Length - 1 + fs.Read(block, compare.Length - 1, blockSize);
                         }
                     }
-                    while (!m_stop);
+                    while (!stop);
 
                     fs.Close();
                 }
@@ -184,7 +183,6 @@ namespace MultiThreadedFileSearcher
 
             return contains;
         }
-
         private static void Searcher_FoundInfo(FileFoundInfoEventArgs e)
         {
             throw new NotImplementedException();
