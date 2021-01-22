@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace MultiThreadedFileSearcher
 {
@@ -10,8 +11,8 @@ namespace MultiThreadedFileSearcher
         public delegate void FileFoundInfoEventHandler(FileFoundInfoEventArgs e);
         public static event FileFoundInfoEventHandler FoundInfo;
 
-        private static string directoryToSearch = @"C:\Users\JosephM\OneDrive - Magenic\Pictures\Notes\08 Code Junks";
-        private static List<string> fileName = new List<string> { "canvas*" };
+        private static string directoryToSearch = @"C:\Users\JosephM\";
+        private static List<string> fileName = new List<string> { "details*" };
         private static string fileToSearch = @"";
         private static Byte[] containingBytes = null;
         private static bool stop;
@@ -90,7 +91,7 @@ namespace MultiThreadedFileSearcher
                             }
 
                             // Recursion:
-                            SearchDirectory(subDirInfo);
+                            new Thread(() => { SearchDirectory(subDirInfo); }).Start();
                         }
                     }
                 }
